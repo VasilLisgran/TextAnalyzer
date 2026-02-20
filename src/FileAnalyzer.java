@@ -31,7 +31,7 @@ public class FileAnalyzer {
             System.out.println("Стоп-слова в анализаторе: " + stopWords);
             while ((line = reader.readLine()) != null) {
                 this.totalLines++;
-                String[] words = line.replaceAll("[^а-яА-Яa-zA-Z]+", " ")
+                String[] words = line.replaceAll("[^-а-яА-Яa-zA-Z]+", " ")
                         .trim()
                         .split("\\s+");
                 for (String word : words) {

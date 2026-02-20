@@ -14,7 +14,7 @@ public class Main {
         int n = 2;
 
         ReportGenerator RG = new ReportGenerator();
-        RG.saveReport(FI, FA, stopWords, "done.txt", n);
+        RG.saveReport(FI, stopWords, "done.txt", n, "water.txt");
 
     }
 }

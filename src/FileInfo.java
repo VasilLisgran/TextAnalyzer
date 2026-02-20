@@ -1,7 +1,4 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.*;
 
 public record FileInfo(
@@ -75,6 +72,34 @@ public record FileInfo(
             }
         }
         return shortest;
+    }
+
+    public Set<String> loadWater(String fileName){
+        Set<String> waterWords = new HashSet<>();
+        try(BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null){
+                waterWords.add(line);
+            }
+        }
+        catch (IOException e){
+            System.out.println(e.getMessage());
+
+        }
+        return waterWords;
+    }
+
+    public double water(String fileName){
+        int total = 0;
+        Set<String> waterWords = loadWater(fileName);
+
+        for (Map.Entry<String, Integer> entry : uniqueWords.entrySet()) {
+            if(waterWords.contains(entry.getKey().toLowerCase())){
+                total += entry.getValue(); // + частота слова
+            }
+        }
+
+        return (double) total /totalWords * 100;
     }
 }
 

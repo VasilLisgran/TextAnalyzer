@@ -4,17 +4,13 @@ import java.io.PrintWriter;
 import java.util.Set;
 
 public class ReportGenerator {
-    StopWordsManager manager = new StopWordsManager();
-    Set<String> stopWords = manager.loadStopWords("stop-words.txt");  // заполняем и получаем сразу
 
-    // 2. Анализ файла
-    FileAnalyzer FA = new FileAnalyzer(stopWords);
-    FileInfo FI = FA.getInfo();
 
-    public void saveReport(FileInfo fi, FileAnalyzer fa, Set<String> stopWords, String outputFile, int n){
+    public void saveReport(FileInfo fi, Set<String> stopWords, String outputFile, int n, String loadWaterFileName){
         try(PrintWriter writer = new PrintWriter(new FileWriter(outputFile))) {
             printTitle(writer, fi);
-            printBasicStats(writer, fi, n);
+            printBasicStats(writer, fi, n, stopWords);
+            printWater(writer, fi,loadWaterFileName);
         }
         catch (IOException e){
             System.out.println(e.getMessage());
@@ -27,11 +23,16 @@ public class ReportGenerator {
         writer.println("Всего строк: " + fi.totalLines());
     }
 
-    public void printBasicStats(PrintWriter writer, FileInfo fi, int n){
+    public void printBasicStats(PrintWriter writer, FileInfo fi, int n, Set<String> stopWords){
         writer.println("Самое длинное слово: " + fi.longestWord());
         writer.println("Самое короткое слово: " + fi.shortestWord());
         writer.println("Самое популярное слово: " + fi.getTopWords(n, stopWords));
         writer.println("Самое редкое слово: " + fi.getRareWords(n, stopWords));
+    }
+
+    public void printWater(PrintWriter writer, FileInfo fi, String fileName){
+        double waterP = fi.water(fileName);
+        writer.printf("Общий уровень шума: %.3f%%%n", waterP);
     }
 
 }
