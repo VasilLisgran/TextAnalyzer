@@ -10,7 +10,7 @@ public record FileInfo(
         int totalLines,
         Map<String, Integer> uniqueWords
 ) {
-    public void getTopWords(int n, Set<String> stopWords){
+    public List<Map.Entry<String, Integer>> getTopWords(int n, Set<String> stopWords){
         List<Map.Entry<String, Integer>> list = new ArrayList<>();
 
         for (Map.Entry<String, Integer> entry : uniqueWords.entrySet()){
@@ -24,14 +24,10 @@ public record FileInfo(
                 .reversed()
                 .thenComparing(Map.Entry::getKey));
 
-        for (int i = 0; i < n && i < list.size(); i++) {
-            // Entry for using one pair, not the whole Map
-            Map.Entry<String, Integer> entry = list.get(i);
-            System.out.println((i+1) +"." + entry.getKey() + " " + entry.getValue());
-        }
+        return list.subList(0, Math.min(n, list.size()));
     }
 
-    public void getRareWords(int n, Set<String> stopWords){
+    public List<Map.Entry<String, Integer>> getRareWords(int n, Set<String> stopWords){
         List<Map.Entry<String, Integer>> list = new ArrayList<>();
 
         for (Map.Entry<String, Integer> entry : uniqueWords.entrySet()){
@@ -43,19 +39,18 @@ public record FileInfo(
         list.sort(Comparator.comparingInt((Map.Entry<String, Integer> e) -> e.getValue())
                 .thenComparing(Map.Entry::getKey));
 
-        for (int i = 0; i < n && i < list.size(); i++) {
-            Map.Entry<String, Integer> entry = list.get(i);
 
-            System.out.println((i+1) +"." + entry.getKey() + " " + entry.getValue());
-        }
+        return list.subList(0, Math.min(n, list.size()));
     }
 
-    public void lengthStats(){
+    public void lengthStats(int n, Set<String> stopWords){
         longestWord();
         shortestWord();
+        getTopWords(n, stopWords);
+        getRareWords(n, stopWords);
     }
 
-    public void longestWord(){
+    public String longestWord(){
         // Firstly I decided to use Comparator....
         /* List<String> wordslist = new ArrayList<>(uniqueWords.keySet());
         wordslist.sort(Comparator.comparing(String::length));
@@ -68,10 +63,10 @@ public record FileInfo(
                 longest = word;
             }
         }
-        System.out.println("The longest word: " + longest);
+        return longest;
     }
 
-    public void shortestWord() {
+    public String shortestWord() {
         String shortest = "";
         for (String word : uniqueWords.keySet()) {
             //Skip if its ""
@@ -79,7 +74,7 @@ public record FileInfo(
                 shortest = word;
             }
         }
-        System.out.println("The shortest word: " + shortest);
+        return shortest;
     }
 }
 
